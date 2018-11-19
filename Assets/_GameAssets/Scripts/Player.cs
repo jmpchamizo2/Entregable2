@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum estadoPlayer { parado, andandoIzq, andandoDer, corriendoIzq,  corriendoDer, volando, nadando, inmune, sinEstado }
 
@@ -12,6 +13,7 @@ public class Player : MonoBehaviour
     Rigidbody rb;
     bool corriendo = false;
     Animator playerAnimator;
+    bool mostrarVida = false;
 
     [Header ("Características")]
     [SerializeField] int velocidad;
@@ -19,7 +21,6 @@ public class Player : MonoBehaviour
     [SerializeField] GameObject posicionPies;
     [Header("Objetos")]
     [SerializeField] int cantidadCombustibleDeVuelo = 100;
-    private int maxcantidadCombustibleDeVuelo = 100;
     bool ignicion = false;
     float tiempoActivarTrigger = 1f;
     [Header("Salud")]
@@ -37,6 +38,11 @@ public class Player : MonoBehaviour
     [SerializeField] Transform disparoTierra;
     [SerializeField] int energiaArmas = 100;
     private int energiaMaximaArmas = 100;
+    private int puntuacion = 0;
+    [Header("UI")]
+    [SerializeField] Text puntuacionTxt;
+    [SerializeField] Image frontalBarraVida;
+    [SerializeField] CanvasGroup barraVida;
 
 
 
@@ -63,6 +69,13 @@ public class Player : MonoBehaviour
         ySpeedActual = rb.velocity.y;
         VolarSaltarCaminar();
         CambiarDireccion();
+        if (mostrarVida)
+        {
+            MostrarBarraDeVida();
+        }else
+        {
+            OcultarBarraDeVida();
+        }
     }
 
 
@@ -208,6 +221,7 @@ public class Player : MonoBehaviour
     {
         Transform posicionDisparo = null;
         ParticleSystem ps = null;
+        int tiempoParaDesaparecer = 2;
 
         if (Input.GetKeyDown(KeyCode.S))
         {
@@ -222,7 +236,7 @@ public class Player : MonoBehaviour
                 ps = Instantiate(laser, posicionDisparo.transform);
             }
             ps.Play();
-            Destroy(ps.gameObject, 2);
+            Destroy(ps.gameObject, tiempoParaDesaparecer);
         }
     }
 
@@ -274,18 +288,95 @@ public class Player : MonoBehaviour
     public void RecibirDanyo(int danyo)
     {
         salud -= danyo;
-        salud = Mathf.Max(salud, 0);
+        if (salud < 0)
+        {
+            salud += saludMaxima;
+            ModificarVida(false);
+        }
+        frontalBarraVida.fillAmount = (float)salud / 100;
+        MostrarVida();
     }
 
     public void Sanar(int sanacion)
     {
         salud += sanacion;
-        salud = Mathf.Min(salud, saludMaxima);
+        if(salud > saludMaxima)
+        {
+            salud -= saludMaxima;
+            ModificarVida(true);
+        }
+        frontalBarraVida.fillAmount = (float)salud / 100;
+        MostrarVida();
+    }
+
+    private void MostrarVida()
+    {
+        int tiempoMostrandoBarraVida = 4;
+        CambiarMostrarVida();
+        Invoke("CambiarMostrarVida", tiempoMostrandoBarraVida);
     }
 
     public void ModificarVida(bool aumentar)
     {
-        this.vidas = (aumentar) ? Mathf.Min(vidas, vidasMaximas) : Mathf.Max(vidas, 0);
+        CameraScript cs = FindObjectOfType<CameraScript>();
+        if (aumentar)
+        {
+            Mathf.Min(++vidas, vidasMaximas);
+            cs.SumarVida();
+        }
+        else
+        {
+            Mathf.Max(--vidas, 0);
+            cs.RestarVida();
+        }
+        
+
+        
     }
 
+    public void IncrementarCombustible(int cantidadCombustible)
+    {
+        cantidadCombustibleDeVuelo += cantidadCombustible;
+    }
+
+    public void incrementarPuntuacion()
+    {
+        puntuacion++;
+        puntuacionTxt.text = puntuacion.ToString();
+    }
+
+    public int getPuntuacion()
+    {
+        return puntuacion;
+    }
+
+    public int getVidasMaximas()
+    {
+        return vidasMaximas;
+    }
+
+    public int getVidas()
+    {
+        return vidas;
+    }
+
+    private void OcultarBarraDeVida()
+    {
+        float velocidadTransparente = 0.01f;
+        if (barraVida.alpha > 0)
+        {
+            barraVida.alpha -= velocidadTransparente;
+        }
+        
+    }
+
+    private void MostrarBarraDeVida()
+    {
+        barraVida.alpha = 1;
+    }
+
+    private void CambiarMostrarVida()
+    {
+        mostrarVida = !mostrarVida;
+    }
 }

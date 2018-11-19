@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnemigoListo : EnemigoMovil {
 
     protected GameObject player;
-    bool estaInvocado = false;
+    bool estaInvocado = true;
 
     protected void Awake()
     {
@@ -14,11 +14,11 @@ public class EnemigoListo : EnemigoMovil {
 
 
     protected override void Update() 
-    {
-       
-        if (GetDistancia().magnitude < distanciaDeteccion * distanciaDeteccion) {
+    {       
+        if (GetDistancia().magnitude <= distanciaDeteccion) {
             PararDeRotar(true);
-            this.transform.LookAt(new Vector3(player.transform.position.x, this.transform.position.y, player.transform.position.z));
+            rotacion = (this.transform.position.z - player.transform.position.z > 0) ? -1 : 1;
+            this.transform.localScale = new Vector3(1, 1, rotacion);
         }
         else
         {
@@ -29,20 +29,20 @@ public class EnemigoListo : EnemigoMovil {
 
     protected Vector3 GetDistancia()
     {
-        return player.transform.position - transform.position;
+        return player.transform.position - this.transform.position;
     }
 
     protected void PararDeRotar(bool pararRotar)
     {
-        if (!pararRotar && !estaInvocado)
+        if (pararRotar && estaInvocado)
         {
-            InvokeRepeating("RotarAleatoriamente", inicioRotacion, tiempoEntreRotacion);
-            estaInvocado = true;
-        }
-        else
-        {
-            CancelInvoke("RotarAleatoriamente");
+            CancelInvoke("Rotar");
             estaInvocado = false;
+        }
+        else if(!estaInvocado)
+        {
+            InvokeRepeating("Rotar", inicioRotacion, tiempoEntreRotacion);
+            estaInvocado = true;
         }
     }
 }
