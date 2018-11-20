@@ -1306,7 +1306,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8eaab88b1dcb7c4995193a17b46c602, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  follow: {fileID: 0}
+  follow: {fileID: 1644724765}
 --- !u!4 &565662065 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4266174639383058, guid: b803721bb9381c2478423fb2d37a180b,
@@ -2027,7 +2027,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1013430910}
   - component: {fileID: 1013430912}
-  - component: {fileID: 1013430911}
   - component: {fileID: 1013430913}
   m_Layer: 0
   m_Name: Camera
@@ -2049,13 +2048,6 @@ Transform:
   m_Father: {fileID: 534669905}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!81 &1013430911
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1013430909}
-  m_Enabled: 1
 --- !u!20 &1013430912
 Camera:
   m_ObjectHideFlags: 0

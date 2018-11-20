@@ -7,5 +7,6 @@ public class RotacionAsteroide : MonoBehaviour {
 
 	void FixedUpdate () {
         this.transform.Rotate(new Vector3(1 ,1 ,1) * Time.deltaTime * velocidadRotacion);
+
 	}
 }
