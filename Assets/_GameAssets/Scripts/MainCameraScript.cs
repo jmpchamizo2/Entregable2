@@ -4,10 +4,23 @@ using UnityEngine;
 
 public class MainCameraScript : MonoBehaviour {
     [SerializeField] GameObject follow;
+    [SerializeField] GameObject prefabVida;
     Vector3 posicionAnterior;
-	void Start () {
-        posicionAnterior = follow.transform.position;		
-	}
+    GameObject[] personajes;
+
+    float posicionVidasX = -7.6f;
+    float posicionVidasY = 2.56f;
+    float posicionVidasZ = 20.2f;
+    float aumentoEnX = 0.9f;
+    
+
+    void Start () {
+        posicionAnterior = follow.transform.position;
+        personajes = new GameObject[3];
+        for (int i = 0; i < personajes.Length; i++) {
+            personajes[i] = Instantiate(prefabVida, new Vector3(posicionVidasX + aumentoEnX * i, posicionVidasY, posicionVidasZ), Quaternion.identity, this.transform);
+        }
+    }
 	
 
 	void Update () {
@@ -24,4 +37,7 @@ public class MainCameraScript : MonoBehaviour {
     {
         posicionAnterior = follow.transform.position;
     }
+
+
+
 }

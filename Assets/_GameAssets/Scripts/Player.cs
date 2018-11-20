@@ -288,4 +288,11 @@ public class Player : MonoBehaviour
         this.vidas = (aumentar) ? Mathf.Min(vidas, vidasMaximas) : Mathf.Max(vidas, 0);
     }
 
+    public int getVidas() {
+        return vidas;
+    }
+
+    public int getVidasMaximas() {
+        return vidasMaximas;
+    }
 }
